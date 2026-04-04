@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${listTitle}">Book List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #1a1a1a;
+        }
+
+        .book-row {
+            background: white;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-info .title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+        }
+
+        .book-info .year {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .book-info .original {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .book-info .alt {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-read { background: #d4edda; color: #155724; }
+        .badge-unread { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a class="back-link" href="/books">← Back</a>
+        <h1 th:text="${listTitle}"></h1>
+    </div>
+
+    <div th:each="book : ${books}" class="book-row">
+        <div class="book-info">
+            <div class="title" th:text="${book.title}"></div>
+            <div class="year" th:text="${book.pubYear}"></div>
+            <div class="original" 
+                 th:if="${book.originalTitle != null and !book.originalTitle.isEmpty()}"
+                 th:text="${book.originalTitle}"></div>
+            <div class="alt"
+                 th:if="${book.altTitles != null and !book.altTitles.isEmpty()}"
+                 th:text="${book.altTitles}"></div>
+        </div>
+        <span class="badge badge-read" th:if="${book.readStatus}">✓ Read</span>
+        <span class="badge badge-unread" th:unless="${book.readStatus}">Unread</span>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>🕵️‍♂️ Search Maigret Books</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .search-box input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            -webkit-appearance: none;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .book-original {
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #444;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .badge-read {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-unread {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .notes {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+        }
+
+        .btn-secondary {
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            color: #333;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="/books" style="font-size: 0.9rem; color: #2c3e50; text-decoration: none;">← Home</a>
+
+    <h1>🔍 Maigret Book Search</h1>
+
+    <form method="get" action="/books/search">
+        <div class="search-box">
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   placeholder="e.g. yellow, crossroads..."
+                   autofocus />
+            <button type="submit">Search</button>
+        </div>
+    </form>
+<div th:each="book : ${books}" th:if="${book != null}" class="book-card">
+    <div class="book-title" th:text="${book.title}"></div>
+    <div class="book-original" th:text="${book.originalTitle}"></div>
+    <div th:if="${book.altTitles != null and !book.altTitles.isEmpty()}"
+     th:text="${book.altTitles}"
+     style="font-size: 0.8rem; color: #aaa; margin-top: 2px;"></div>
+    <div class="book-meta">
+        <span th:text="${book.pubYear}"></span>
+        <span class="badge badge-read" th:if="${book.readStatus}">✓ Read</span>
+        <span class="badge badge-unread" th:unless="${book.readStatus}">Unread</span>
+    </div>
+    <form method="post" th:action="@{/books/update-notes}" style="margin-top: 10px;">
+        <input type="hidden" name="keyword" th:value="${keyword}" />
+        <input type="hidden" name="title" th:value="${book.title}" />
+        <input type="text"
+               name="notes"
+               th:value="${book.notes}"
+               maxlength="100"
+               placeholder="Add a note..."
+Save Note               class="notes-input" />
+<button type="submit" class="btn-secondary">Save Note</button>
+    </form>
+    <form method="post" th:action="@{/books/toggle-read}" style="margin-top: 8px;">
+        <input type="hidden" name="keyword" th:value="${keyword}" />
+        <input type="hidden" name="title" th:value="${book.title}" />
+        <button type="submit" 
+                class="btn-secondary"
+                th:text="${book.readStatus} ? 'Mark Unread' : 'Mark Read'">
+        </button>
+    </form>
+</div>
+
+</body>
+</html>
