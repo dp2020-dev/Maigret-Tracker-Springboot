@@ -32,4 +32,17 @@ public class MaigretBookApiController {
         book.setReadStatus(!Boolean.TRUE.equals(book.getReadStatus()));
         return repository.save(book);
     }
+
+    @GetMapping("/search")
+    public List<MaigretBook> searchBooks(@RequestParam String keyword) {
+        return repository.searchByTitle(keyword);
+    }
+
+    @PatchMapping("/{title}/notes")
+    public MaigretBook updateNotes(@PathVariable String title, 
+                                @RequestParam(required = false) String notes) {
+    MaigretBook book = repository.findById(title).orElseThrow();
+    book.setNotes(notes);
+    return repository.save(book);
+    }
 }
