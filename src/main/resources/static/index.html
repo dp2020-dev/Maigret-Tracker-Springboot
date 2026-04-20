@@ -249,8 +249,7 @@
             filterBooks(currentFilter);
         }
 
-        async function saveNotes(title) {
-            const notes = document.getElementById('notes-' + CSS.escape(title)).value;
+        async function saveNotes(title, notes) {
             await fetch('/api/books/' + encodeURIComponent(title) + '/notes?notes=' + encodeURIComponent(notes), { method: 'PATCH' });
             const idx = allBooks.findIndex(b => b.title === title);
             if (idx !== -1) allBooks[idx].notes = notes;
@@ -263,23 +262,31 @@
                 return;
             }
             container.innerHTML = books.map(book => `
-                <div class="book-card">
+                <div class="book-card" data-title="${book.title.replace(/"/g, '&quot;')}">
                     <div class="book-title">${book.title}</div>
                     <div class="book-meta">${book.pubYear ? book.pubYear : ''}</div>
                     <span class="badge ${book.readStatus ? 'badge-read' : 'badge-unread'}">
                         ${book.readStatus ? '&#10003; Read' : 'Unread'}
                     </span>
-                    <button class="toggle-btn" onclick="toggleRead('${book.title.replace(/'/g, "\\'")}')">
-                        Mark as ${book.readStatus ? 'Unread' : 'Read'}
-                    </button>
+                    <button class="toggle-btn">Mark as ${book.readStatus ? 'Unread' : 'Read'}</button>
                     <div class="notes-area">
-                        <textarea id="notes-${book.title}" placeholder="Add notes...">${book.notes || ''}</textarea>
-                        <button onclick="saveNotes('${book.title.replace(/'/g, "\\'")}')">Save notes</button>
+                        <textarea placeholder="Add notes...">${book.notes || ''}</textarea>
+                        <button class="save-notes-btn">Save notes</button>
                     </div>
                 </div>
             `).join('');
-        }
 
+            // Wire up event listeners safely — no inline JS, no escaping issues
+            container.querySelectorAll('.book-card').forEach(card => {
+                const title = card.dataset.title;
+
+                card.querySelector('.toggle-btn').addEventListener('click', () => toggleRead(title));
+                card.querySelector('.save-notes-btn').addEventListener('click', () => {
+                    const notes = card.querySelector('textarea').value;
+                    saveNotes(title, notes);
+                });
+            });
+        }
         document.getElementById('search-input').addEventListener('keydown', e => {
             if (e.key === 'Enter') searchBooks();
         });
