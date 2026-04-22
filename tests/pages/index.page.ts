@@ -34,11 +34,6 @@ export class IndexPage {
     await this.page.goto('/');
     }
 
-//   async viewReadMessages() {
-//     await this.readTab.click();
-
-//   }
-
   async performSearch(term: string) {
     await this.searchInput.fill(term);
     await this.searchButton.click();
