@@ -16,9 +16,6 @@ import { defineConfig, devices } from '@playwright/test';
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 export default defineConfig({
   
-
-  globalSetup: './tests/global-setup.ts',
-  globalTeardown: './tests/global-teardown.ts',
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,

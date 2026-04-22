@@ -1,4 +1,14 @@
 import { test, expect } from '../fixtures/base.fixture';
+import { execSync } from 'child_process';
+
+test.beforeAll(() => {
+  execSync('cp test-seed.db test.db');
+});
+
+test.afterAll(() => {
+  execSync('cp test-seed.db test.db');
+});
+
 
 test('has title', async ({ page }) => {
   await page.goto('/');
