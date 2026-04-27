@@ -35,3 +35,30 @@ test('book with readStatus false displays as Unread', async ({ page }) => {
   await expect(page.getByText('Pietr the Latvian', { exact: true })).toBeVisible();
   await expect(page.locator('span.badge-unread')).toHaveText('Unread');
 });
+
+test('index page still renders if books fail to load', async ({ indexPage, page, request }) => {
+
+    // Fetch real data first
+    const response = await request.get('http://localhost:8080/api/books');
+    const books = await response.json();
+  
+    // Intercept and abort the loading of books
+    await page.route('**/api/books', route => route.abort());
+
+    //assert index page loads and 0 books have been loaded
+    await indexPage.goto();
+    await expect(indexPage.totalBooks).toHaveText('0');
+
+});
+
+test('visual comparison after image fails to load', async ({ indexPage, page, request }) => {
+
+    // Fetch real data first
+    const response = await request.get('http://localhost:8080/api/index.html');
+    const books = await response.json();
+  
+    // Intercept and abort the loading of books
+    await page.route('**/headerImg.png', route => route.abort());
+    await indexPage.goto();
+    await expect(page).toHaveScreenshot();
+});

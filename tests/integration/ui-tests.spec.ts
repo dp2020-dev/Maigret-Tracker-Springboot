@@ -37,3 +37,30 @@ test('verify progress percentage.', async ({ indexPage }) => {
   await indexPage.goto();
   await indexPage.percentComplete();
   });
+
+test('visual comparison example test', async ({ indexPage, page }) => {
+  await indexPage.goto();
+  await expect(page).toHaveScreenshot();
+});
+
+test('visual comparison after screen change', async ({ indexPage, page, request }) => {
+
+    // Fetch real data first
+    const response = await request.get('http://localhost:8080/api/books');
+    const books = await response.json();
+    
+    // Modify the first book title
+    books[0].title = '%Pieter^The L@tvian';
+    
+    // Intercept and return modified data
+    await page.route('**/api/books', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            json: books
+        });
+    });
+
+    await indexPage.goto();
+    await expect(page).toHaveScreenshot();
+});
