@@ -38,7 +38,7 @@ jobs:
           git diff --staged --quiet || git commit -m "update linux baseline screenshots"
           git push
       - name: Run Playwright tests
-        run: npx playwright test tests/component-tests tests/integration
+        run: npx playwright test tests/component tests/integration
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
