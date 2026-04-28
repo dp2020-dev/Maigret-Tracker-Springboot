@@ -1,13 +1,19 @@
 import { test, expect } from '../fixtures/base.fixture';
 import { execSync } from 'child_process';
-import { IndexPage } from '../pages/index.page';
+import path from 'path';
+
+
 
 test.beforeAll(() => {
-  execSync('cp test-seed.db test.db');
+  const seed = path.resolve(process.cwd(), 'test-seed.db');
+  const target = path.resolve(process.cwd(), 'test.db');
+  execSync(`cp ${seed} ${target}`);
 });
 
 test.afterAll(() => {
-  execSync('cp test-seed.db test.db');
+  const seed = path.resolve(process.cwd(), 'test-seed.db');
+  const target = path.resolve(process.cwd(), 'test.db');
+  execSync(`cp ${seed} ${target}`);
 });
 
 

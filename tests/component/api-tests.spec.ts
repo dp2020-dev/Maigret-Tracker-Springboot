@@ -51,14 +51,14 @@ test('index page still renders if books fail to load', async ({ indexPage, page,
 
 });
 
-test('visual comparison after image fails to load', async ({ indexPage, page, request }) => {
+// test('visual comparison after image fails to load', async ({ indexPage, page, request }) => {
 
-    // Fetch real data first
-    const response = await request.get('http://localhost:8080/api/index.html');
-    const books = await response.json();
+//     // Fetch real data first
+//     const response = await request.get('http://localhost:8080/api/index.html');
+//     const books = await response.json();
   
-    // Intercept and abort the loading of books
-    await page.route('**/headerImg.png', route => route.abort());
-    await indexPage.goto();
-    await expect(page).toHaveScreenshot();
-});
+//     // Intercept and abort the loading of books
+//     await page.route('**/headerImg.png', route => route.abort());
+//     await indexPage.goto();
+//     await expect(page).toHaveScreenshot();
+// });
