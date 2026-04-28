@@ -40,5 +40,5 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
-test.db
-test-seed.db
+# test.db
+# test-seed.db
