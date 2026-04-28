@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/base.fixture';
 import { execSync } from 'child_process';
+import { IndexPage } from '../pages/index.page';
 
 test.beforeAll(() => {
   execSync('cp test-seed.db test.db');
@@ -41,6 +42,16 @@ test('verify progress percentage.', async ({ indexPage }) => {
 test('visual comparison example test', async ({ indexPage, page }) => {
   await indexPage.goto();
   await expect(page).toHaveScreenshot();
+});
+
+test('updating a book from unread to read', async ({ indexPage}) => {
+  await indexPage.goto();
+  await indexPage.getBookCardByTitle("The Yellow Cat")
+  await expect(indexPage.statusBadge('The Yellow Cat', 'unread')).toBeVisible();
+  await indexPage.markAsRead('The Yellow Cat');
+  await expect(indexPage.statusBadge('The Yellow Cat', 'read')).toBeVisible();
+
+
 });
 
 test('visual comparison after screen change', async ({ indexPage, page, request }) => {

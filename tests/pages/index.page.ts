@@ -47,10 +47,27 @@ export class IndexPage {
     return this.bookCards.filter({ hasText: title });
   }
 
+  async bookIsRead(title: string) {
+    const card = this.getBookCardByTitle(title);
+    return await card.locator('.badge-read').isVisible();
+
+
+    // await expect(card.locator('.badge-read')).toBeVisible();
+    // if 
+
+    // const bookIsRead = await.card.locator('.badge-read')).isVisible();
+    
+  }
+
   async markAsRead(title: string) {
     const card = this.getBookCardByTitle(title);
     await card.getByRole('button', { name: 'Mark as Read' }).click();
   }
+
+  statusBadge(title: string, status: 'read' | 'unread') {
+  const className = status === 'read' ? '.badge-read' : '.badge-unread';
+  return this.getBookCardByTitle(title).locator(className);
+}
 
   async countBooks() {
     const totalCount = parseInt(await this.totalBooks.textContent() || '0');
