@@ -22,6 +22,9 @@ public class MaigretBook {
     @Column(name = "read_status")
     private Boolean readStatus;
 
+    @Column(name = "libraryUrl")
+    private String libraryUrl;
+
     @Column(name = "notes")
     private String notes;
 
@@ -32,6 +35,7 @@ public class MaigretBook {
     public Integer getPubYear() { return pubYear; }
     public Boolean getReadStatus() { return readStatus; }
     public String getNotes() { return notes; }
+    public String getLibraryUrl() { return libraryUrl; }
 
     public void setTitle(String title) { this.title = title; }
     public void setAltTitles(String altTitles) { this.altTitles = altTitles; }
@@ -39,4 +43,5 @@ public class MaigretBook {
     public void setPubYear(Integer pubYear) { this.pubYear = pubYear; }
     public void setReadStatus(Boolean readStatus) { this.readStatus = readStatus; }
     public void setNotes(String notes) { this.notes = notes; }
+    public void setLibraryUrl(String libraryUrl) { this.libraryUrl = libraryUrl; }
 }

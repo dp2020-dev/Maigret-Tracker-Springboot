@@ -272,20 +272,27 @@
                     <div class="notes-area">
                         <textarea placeholder="Add notes...">${book.notes || ''}</textarea>
                         <button class="save-notes-btn">Save notes</button>
+                        <button class="open-library-btn" data-url="${book.libraryUrl || ''}">Open Library</button>
                     </div>
                 </div>
             `).join('');
 
             // Wire up event listeners safely — no inline JS, no escaping issues
             container.querySelectorAll('.book-card').forEach(card => {
-                const title = card.dataset.title;
+            const title = card.dataset.title;
 
-                card.querySelector('.toggle-btn').addEventListener('click', () => toggleRead(title));
-                card.querySelector('.save-notes-btn').addEventListener('click', () => {
-                    const notes = card.querySelector('textarea').value;
-                    saveNotes(title, notes);
-                });
+            card.querySelector('.toggle-btn').addEventListener('click', () => toggleRead(title));
+            
+            card.querySelector('.save-notes-btn').addEventListener('click', () => {
+                const notes = card.querySelector('textarea').value;
+                saveNotes(title, notes);
             });
+
+            card.querySelector('.open-library-btn').addEventListener('click', () => {
+                const url = card.querySelector('.open-library-btn').dataset.url;
+                if (url) window.open(url, '_blank');
+            });
+        });
         }
         document.getElementById('search-input').addEventListener('keydown', e => {
             if (e.key === 'Enter') searchBooks();

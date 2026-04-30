@@ -56,28 +56,21 @@ test('updating a book from unread to read', async ({ indexPage}) => {
   await expect(indexPage.statusBadge('The Yellow Cat', 'unread')).toBeVisible();
   await indexPage.markAsRead('The Yellow Cat');
   await expect(indexPage.statusBadge('The Yellow Cat', 'read')).toBeVisible();
-
-
 });
 
-test('visual comparison after screen change', async ({ indexPage, page, request }) => {
-
-    // Fetch real data first
-    const response = await request.get('http://localhost:8080/api/books');
-    const books = await response.json();
-    
-    // Modify the first book title
-    books[0].title = '%Pieter^The L@tvian';
-    
-    // Intercept and return modified data
-    await page.route('**/api/books', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            json: books
-        });
-    });
-
+test('visual comparison after marking book as read', async ({ indexPage, page }) => {
+    // Take screenshot of initial state
     await indexPage.goto();
-    await expect(page).toHaveScreenshot();
+    await page.waitForLoadState('networkidle');
+    await expect(page).toHaveScreenshot('before-mark-as-read.png');
+
+    // Search for a book
+    await indexPage.performSearch("Cat")
+    
+    // Mark it as read
+    await indexPage.markAsRead("The Yellow Cat");
+
+    // Take screenshot of new state and expect it to differ from before
+    await expect(page).toHaveScreenshot('after-mark-as-read.png');
 });
+
