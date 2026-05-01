@@ -15,6 +15,8 @@ export class IndexPage {
   readonly unreadCount: Locator;
   readonly totalBooks: Locator;
   readonly progressLabel: Locator;
+  // readonly openLibraryBtn: Locator;
+  // readonly closeLibraryBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,6 +30,8 @@ export class IndexPage {
     this.unreadCount = page.locator('#unread-count');
     this.totalBooks = page.locator('#total-count');
     this.progressLabel = page.locator('#progress-label');
+    // this.openLibraryBtn = page.getByRole('button', { name: 'Open Library' });
+    // this.closeLibraryBtn = page.getByRole('button', { name: 'Close Library' });
   }
 
   async goto() {
@@ -50,13 +54,6 @@ export class IndexPage {
   async bookIsRead(title: string) {
     const card = this.getBookCardByTitle(title);
     return await card.locator('.badge-read').isVisible();
-
-
-    // await expect(card.locator('.badge-read')).toBeVisible();
-    // if 
-
-    // const bookIsRead = await.card.locator('.badge-read')).isVisible();
-    
   }
 
   async markAsRead(title: string) {
@@ -64,9 +61,15 @@ export class IndexPage {
     await card.getByRole('button', { name: 'Mark as Read' }).click();
   }
 
+
+  libraryBtn(title: string, state: 'Open' | 'Close') {
+    const card = this.getBookCardByTitle(title);
+    return card.getByRole('button', { name: `${state} Library` });
+}
+  
   statusBadge(title: string, status: 'read' | 'unread') {
-  const className = status === 'read' ? '.badge-read' : '.badge-unread';
-  return this.getBookCardByTitle(title).locator(className);
+    const className = status === 'read' ? '.badge-read' : '.badge-unread';
+    return this.getBookCardByTitle(title).locator(className);
 }
 
   async countBooks() {

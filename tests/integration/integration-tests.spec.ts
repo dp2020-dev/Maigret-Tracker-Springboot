@@ -58,6 +58,30 @@ test('updating a book from unread to read', async ({ indexPage}) => {
   await expect(indexPage.statusBadge('The Yellow Cat', 'read')).toBeVisible();
 });
 
+test('opening the Open Library info for a selected book', async ({ indexPage, page }) => {
+  await indexPage.goto();
+  await indexPage.libraryBtn("Olaf the Lithuanian", 'Open').click();
+
+  // Attribute selector handles spaces in the id correctly
+  const iframeLocator = page.locator('iframe[id="library-frame-Olaf the Lithuanian"]');
+
+  // Wait until Open Library src is set by the click handler
+  await expect(iframeLocator).toHaveAttribute('src', /openlibrary\.org/, { timeout: 10000 });
+
+  // Now safe to get the frame
+  const openLibraryFrame = iframeLocator.contentFrame();
+
+  await openLibraryFrame
+    .locator('img.logo-icon[alt="Open Library logo"]')
+    .waitFor({ state: 'visible', timeout: 15000 });
+
+  await openLibraryFrame
+    .getByRole('link', { name: 'Details' })
+    .click();
+});
+
+
+
 test('visual comparison after marking book as read', async ({ indexPage, page }) => {
     // Take screenshot of initial state
     await indexPage.goto();
