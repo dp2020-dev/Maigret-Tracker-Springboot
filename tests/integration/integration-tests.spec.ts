@@ -62,22 +62,27 @@ test('opening the Open Library info for a selected book', async ({ indexPage, pa
   await indexPage.goto();
   await indexPage.libraryBtn("Olaf the Lithuanian", 'Open').click();
 
-  // Attribute selector handles spaces in the id correctly
+  // set const to get the iframe for the selected book
   const iframeLocator = page.locator('iframe[id="library-frame-Olaf the Lithuanian"]');
 
-  // Wait until Open Library src is set by the click handler
+  // Wait until Open Library src is loaded into the iframe
   await expect(iframeLocator).toHaveAttribute('src', /openlibrary\.org/, { timeout: 10000 });
 
-  // Now safe to get the frame
+  // contentFrame() returns a FrameLocator — gives full Playwright locator access inside the iframe
   const openLibraryFrame = iframeLocator.contentFrame();
 
+  // verifies the book card has loaded the Open Library logo
   await openLibraryFrame
     .locator('img.logo-icon[alt="Open Library logo"]')
     .waitFor({ state: 'visible', timeout: 15000 });
 
+  // verifies able to use elements within the iframe to interact, click and change tabs 
   await openLibraryFrame
     .getByRole('link', { name: 'Details' })
     .click();
+
+  await openLibraryFrame
+    .getByTitle('Book Details');
 });
 
 
@@ -94,7 +99,7 @@ test('visual comparison after marking book as read', async ({ indexPage, page })
     // Mark it as read
     await indexPage.markAsRead("The Yellow Cat");
 
-    // Take screenshot of new state and expect it to differ from before
+    // Take screenshot of new state and expects it to differ from before
     await expect(page).toHaveScreenshot('after-mark-as-read.png');
 });
 
