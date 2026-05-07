@@ -41,6 +41,7 @@ export class IndexPage {
   async performSearch(term: string) {
     await this.searchInput.fill(term);
     await this.searchButton.click();
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getNoResultsText() {
